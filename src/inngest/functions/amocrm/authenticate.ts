@@ -15,15 +15,22 @@ export const authenticateAmoCrm = inngest.createFunction(
   { id: "amocrm-authenticate", retries: 3 },
   { event: "amocrm/auth.required" },
   async ({ event }) => {
-    const { AMOCRM_CLIENT_ID, AMOCRM_CLIENT_SECRET, AMOCRM_REDIRECT_URI, AMOCRM_REFRESH_TOKEN, AMOCRM_SUBDOMAIN } = process.env;
+    const { AMOCRM_CLIENT_ID, AMOCRM_CLIENT_SECRET, AMOCRM_REDIRECT_URI, AMOCRM_REFRESH_TOKEN } = process.env;
+    
+    // Получаем поддомен из event данных
+    const subdomain = event.data.subdomain || event.data.parsedData?.subdomain;
 
-    if (!AMOCRM_CLIENT_ID || !AMOCRM_CLIENT_SECRET || !AMOCRM_REDIRECT_URI || !AMOCRM_REFRESH_TOKEN || !AMOCRM_SUBDOMAIN) {
+    if (!AMOCRM_CLIENT_ID || !AMOCRM_CLIENT_SECRET || !AMOCRM_REDIRECT_URI || !AMOCRM_REFRESH_TOKEN) {
       throw new Error("Missing amoCRM environment variables");
     }
 
-    console.log(`🔐 Authenticating with amoCRM for subdomain: ${AMOCRM_SUBDOMAIN}`);
+    if (!subdomain) {
+      throw new Error("Missing subdomain in event data");
+    }
 
-    const response = await fetch(`https://${AMOCRM_SUBDOMAIN}.amocrm.ru/oauth2/access_token`, {
+    console.log(`🔐 Authenticating with amoCRM for subdomain: ${subdomain}`);
+
+    const response = await fetch(`https://${subdomain}.amocrm.ru/oauth2/access_token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

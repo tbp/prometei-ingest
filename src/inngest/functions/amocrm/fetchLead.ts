@@ -29,11 +29,17 @@ export const fetchAmoCrmLead = inngest.createFunction(
   { event: "amocrm/lead.fetch" },
   async ({ event }) => {
     const { leadId, accessToken, subdomain } = event.data;
-    const { AMOCRM_SUBDOMAIN } = process.env;
+    
+    // Используем поддомен из event данных или из parsedData
+    const amocrmSubdomain = subdomain || event.data.parsedData?.subdomain;
 
-    console.log(`📥 Fetching lead data for ID: ${leadId}`);
+    if (!amocrmSubdomain) {
+      throw new Error("Missing subdomain in event data");
+    }
 
-    const response = await fetch(`https://${AMOCRM_SUBDOMAIN}.amocrm.ru/api/v4/leads/${leadId}`, {
+    console.log(`📥 Fetching lead data for ID: ${leadId} from ${amocrmSubdomain}`);
+
+    const response = await fetch(`https://${amocrmSubdomain}.amocrm.ru/api/v4/leads/${leadId}`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",

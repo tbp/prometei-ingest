@@ -16,11 +16,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('Missing INNGEST_EVENT_KEY environment variable');
     }
 
+    // Извлекаем поддомен из данных webhook
+    const subdomain = req.body?.data?.["account[subdomain]"]?.[0];
+    const leadId = req.body?.data?.["leads[status][0][id]"]?.[0];
+    const accountId = req.body?.data?.["account[id]"]?.[0];
+
     console.log('📥 Received amoCRM webhook:', {
+      subdomain,
+      leadId,
+      accountId,
+      webhookId: req.body?.id,
       headers: req.headers,
       body: req.body,
       query: req.query
     });
+
+    // Проверяем обязательные данные из webhook
+    if (!subdomain) {
+      throw new Error('Missing subdomain in webhook data');
+    }
+    if (!leadId) {
+      throw new Error('Missing lead ID in webhook data');
+    }
 
     // Создаем Inngest клиент с правильной конфигурацией
     const inngest = new Inngest({
@@ -34,6 +51,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         // Передаем все данные от amoCRM
         ...req.body,
+        // Добавляем извлеченные данные для удобства
+        parsedData: {
+          subdomain,
+          leadId,
+          accountId,
+          pipelineId: req.body?.data?.["leads[status][0][pipeline_id]"]?.[0],
+          statusId: req.body?.data?.["leads[status][0][status_id]"]?.[0],
+          oldPipelineId: req.body?.data?.["leads[status][0][old_pipeline_id]"]?.[0],
+          oldStatusId: req.body?.data?.["leads[status][0][old_status_id]"]?.[0],
+        },
         // Добавляем метаданные
         receivedAt: new Date().toISOString(),
         userAgent: req.headers['user-agent'],

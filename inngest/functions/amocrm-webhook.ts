@@ -64,15 +64,16 @@ export const handleAmoCrmWebhook = inngest.createFunction(
 
     // Step 3: Fetch lead data from amoCRM
     const leadData = await step.run("fetch-lead-data", async () => {
-      const { AMOCRM_SUBDOMAIN } = process.env;
+      // Используем поддомен из webhook данных
+      const subdomain = webhookData.parsedData?.subdomain || parsed.subdomain;
 
-      if (!AMOCRM_SUBDOMAIN) {
-        throw new Error("Missing AMOCRM_SUBDOMAIN environment variable");
+      if (!subdomain) {
+        throw new Error("Missing subdomain in webhook data");
       }
 
-      console.log(`📥 Fetching lead data for ID: ${parsed.leadId} from ${AMOCRM_SUBDOMAIN}`);
+      console.log(`📥 Fetching lead data for ID: ${parsed.leadId} from ${subdomain}`);
 
-      const response = await fetch(`https://${AMOCRM_SUBDOMAIN}.amocrm.ru/api/v4/leads/${parsed.leadId}`, {
+      const response = await fetch(`https://${subdomain}.amocrm.ru/api/v4/leads/${parsed.leadId}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`,
           "Content-Type": "application/json",
