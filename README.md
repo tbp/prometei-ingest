@@ -53,6 +53,7 @@ npm i -g vercel
 1. Settings → Environment Variables
 2. Добавьте все переменные из `.env.example`
 3. Webhook URL: `https://your-project.vercel.app/api/inngest`
+4. Deploy will auto-trigger on git push
 
 ### 5. Тестирование
 
