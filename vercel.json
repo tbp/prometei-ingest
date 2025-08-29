@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "pages/api/inngest.ts": {
+      "maxDuration": 300
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

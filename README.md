@@ -40,7 +40,21 @@ npm run dev
 npm run inngest
 ```
 
-### 4. Тестирование
+### 4. Деплой на Vercel
+
+```bash
+# Установите Vercel CLI (опционально)
+npm i -g vercel
+
+# Или используйте веб-интерфейс: https://vercel.com/new
+```
+
+**Настройка переменных окружения в Vercel:**
+1. Settings → Environment Variables
+2. Добавьте все переменные из `.env.example`
+3. Webhook URL: `https://your-project.vercel.app/api/inngest`
+
+### 5. Тестирование
 
 ```bash
 npm test

@@ -4,16 +4,22 @@
   "description": "amoCRM to ERP Integration Pipeline with Inngest",
   "scripts": {
     "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "inngest": "npx inngest-cli dev",
     "test": "node scripts/test-local.js"
   },
   "dependencies": {
-    "inngest": "^3.22.12",
     "dotenv": "^16.4.5",
-    "next": "^14.0.0"
+    "inngest": "^3.22.12",
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "typescript": "^5.0.0"
   }
 }
