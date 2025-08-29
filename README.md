@@ -138,52 +138,5 @@ await inngest.send({
 1. Войдите в настройки amoCRM
 2. Добавьте webhook: `https://your-domain.com/api/inngest`
 
-## 🔐 Переменные окружения
 
-```bash
-# amoCRM API
-AMOCRM_CLIENT_ID=your_amocrm_client_id
-AMOCRM_CLIENT_SECRET=your_amocrm_client_secret
-AMOCRM_REDIRECT_URI=https://your-domain.com/oauth/callback
-AMOCRM_REFRESH_TOKEN=your_refresh_token
-AMOCRM_SUBDOMAIN=oooprometei
 
-# ERP System API
-CRM_API_URL=https://your-erp-api.com/endpoint
-CRM_API_KEY=your_erp_api_key
-CRM_API_USERNAME=your_erp_username
-CRM_API_PASSWORD=your_erp_password
-```
-
-## 🤖 Context7 Integration
-
-Проект настроен для использования Context7 - AI-помощника с актуальной документацией.
-
-### 📋 Правила использования Context7
-
-- При работе с любыми библиотеками добавляй фразу **«use context7»**
-- Для получения свежей документации по Inngest, Next.js, TypeScript
-- При отладке ошибок и поиске best practices
-- Для проверки совместимости версий зависимостей
-
-### 🔍 Примеры запросов
-
-```bash
-# Работа с Inngest
-"use context7 - Inngest v3.22.12 webhook event handling with TypeScript"
-
-# Next.js API routes
-"use context7 - Next.js v14 API routes with Inngest integration"
-
-# amoCRM интеграция
-"use context7 - amoCRM API v4 OAuth2 refresh token management"
-
-# TypeScript типизация
-"use context7 - TypeScript v5 strict typing for webhook payloads"
-```
-
-### ⚙️ Конфигурация
-
-Context7 настроен в `.cursor-rules` файле с детальными правилами для всех технологий проекта.
-
-Подробные правила смотри в файле: `.cursor-rules`

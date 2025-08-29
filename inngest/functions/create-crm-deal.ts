@@ -26,19 +26,19 @@ export const createCrmDeal = inngest.createFunction(
 
     // Create task in ERP system
     const erpResult = await step.run("create-erp-task", async () => {
-      const { CRM_API_URL, CRM_API_KEY, CRM_API_USERNAME, CRM_API_PASSWORD } = process.env;
+      const { ERP_API_URL, ERP_API_KEY, ERP_API_USERNAME, ERP_API_PASSWORD } = process.env;
 
-      if (!CRM_API_URL || !CRM_API_KEY || !CRM_API_USERNAME || !CRM_API_PASSWORD) {
+      if (!ERP_API_URL || !ERP_API_KEY || !ERP_API_USERNAME || !ERP_API_PASSWORD) {
         throw new Error("Missing ERP environment variables");
       }
 
-      const response = await fetch(CRM_API_URL, {
+      const response = await fetch(ERP_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          key: CRM_API_KEY,
-          username: CRM_API_USERNAME,
-          password: CRM_API_PASSWORD,
+          key: ERP_API_KEY,
+          username: ERP_API_USERNAME,
+          password: ERP_API_PASSWORD,
           action: "insert",
           entity_id: payload.entityId ?? 70,
           items: {

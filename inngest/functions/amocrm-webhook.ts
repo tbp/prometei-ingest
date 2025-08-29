@@ -49,38 +49,28 @@ export const handleAmoCrmWebhook = inngest.createFunction(
       };
     });
 
-    // Step 2: Authenticate with amoCRM
-    const accessToken = await step.run("authenticate-amocrm", async () => {
-      const { AMOCRM_CLIENT_ID, AMOCRM_CLIENT_SECRET, AMOCRM_REDIRECT_URI, AMOCRM_REFRESH_TOKEN, AMOCRM_SUBDOMAIN } = process.env;
+    // Step 2: Get amoCRM access token (JWT - долгосрочный)
+    const accessToken = await step.run("get-amocrm-token", async () => {
+      const { AMOCRM_ACCESS_TOKEN } = process.env;
 
-      if (!AMOCRM_CLIENT_ID || !AMOCRM_CLIENT_SECRET || !AMOCRM_REDIRECT_URI || !AMOCRM_REFRESH_TOKEN || !AMOCRM_SUBDOMAIN) {
-        throw new Error("Missing amoCRM environment variables");
+      if (!AMOCRM_ACCESS_TOKEN) {
+        throw new Error("Missing AMOCRM_ACCESS_TOKEN environment variable");
       }
 
-      const response = await fetch(`https://${AMOCRM_SUBDOMAIN}.amocrm.ru/oauth2/access_token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          client_id: AMOCRM_CLIENT_ID,
-          client_secret: AMOCRM_CLIENT_SECRET,
-          grant_type: "refresh_token",
-          refresh_token: AMOCRM_REFRESH_TOKEN,
-          redirect_uri: AMOCRM_REDIRECT_URI,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`amoCRM auth error ${response.status}: ${error}`);
-      }
-
-      const tokenData = await response.json();
-      return tokenData.access_token;
+      // JWT токен готов к использованию, проверяем его валидность
+      console.log("🔐 Using long-term JWT token for amoCRM");
+      return AMOCRM_ACCESS_TOKEN;
     });
 
     // Step 3: Fetch lead data from amoCRM
     const leadData = await step.run("fetch-lead-data", async () => {
       const { AMOCRM_SUBDOMAIN } = process.env;
+
+      if (!AMOCRM_SUBDOMAIN) {
+        throw new Error("Missing AMOCRM_SUBDOMAIN environment variable");
+      }
+
+      console.log(`📥 Fetching lead data for ID: ${parsed.leadId} from ${AMOCRM_SUBDOMAIN}`);
 
       const response = await fetch(`https://${AMOCRM_SUBDOMAIN}.amocrm.ru/api/v4/leads/${parsed.leadId}`, {
         headers: {
@@ -94,24 +84,26 @@ export const handleAmoCrmWebhook = inngest.createFunction(
         throw new Error(`amoCRM API error ${response.status}: ${error}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log(`📋 Lead fetched: ${data.name}, price: ${data.price}`);
+      return data;
     });
 
     // Step 4: Create task in ERP system
     const erpResult = await step.run("create-erp-task", async () => {
-      const { CRM_API_URL, CRM_API_KEY, CRM_API_USERNAME, CRM_API_PASSWORD } = process.env;
+      const { ERP_API_URL, ERP_API_KEY, ERP_API_USERNAME, ERP_API_PASSWORD } = process.env;
 
-      if (!CRM_API_URL || !CRM_API_KEY || !CRM_API_USERNAME || !CRM_API_PASSWORD) {
+      if (!ERP_API_URL || !ERP_API_KEY || !ERP_API_USERNAME || !ERP_API_PASSWORD) {
         throw new Error("Missing ERP environment variables");
       }
 
-      const response = await fetch(CRM_API_URL, {
+      const response = await fetch(ERP_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          key: CRM_API_KEY,
-          username: CRM_API_USERNAME,
-          password: CRM_API_PASSWORD,
+          key: ERP_API_KEY,
+          username: ERP_API_USERNAME,
+          password: ERP_API_PASSWORD,
           action: "insert",
           entity_id: 70,
           items: {

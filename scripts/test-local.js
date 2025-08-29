@@ -18,7 +18,7 @@ async function testExecuteCreateCrmDeal() {
   console.log("🚀 Тестирование executeCreateCrmDeal функции...");
   
   // Проверяем переменные окружения
-  const requiredEnvs = ['CRM_API_URL', 'CRM_API_KEY', 'CRM_API_USERNAME', 'CRM_API_PASSWORD'];
+  const requiredEnvs = ['ERP_API_URL', 'ERP_API_KEY', 'ERP_API_USERNAME', 'ERP_API_PASSWORD'];
   const missingEnvs = requiredEnvs.filter(env => !process.env[env]);
   
   if (missingEnvs.length > 0) {
@@ -27,10 +27,10 @@ async function testExecuteCreateCrmDeal() {
   }
 
   console.log("✅ Все переменные окружения настроены");
-  console.log("📋 CRM настройки:");
-  console.log("   URL:", process.env.CRM_API_URL);
-  console.log("   Username:", process.env.CRM_API_USERNAME);
-  console.log("   API Key:", process.env.CRM_API_KEY ? "***установлен***" : "не установлен");
+  console.log("📋 ERP настройки:");
+  console.log("   URL:", process.env.ERP_API_URL);
+  console.log("   Username:", process.env.ERP_API_USERNAME);
+  console.log("   API Key:", process.env.ERP_API_KEY ? "***установлен***" : "не установлен");
   console.log("");
 
   // Тестовые данные
@@ -45,9 +45,9 @@ async function testExecuteCreateCrmDeal() {
   try {
     // Имитируем функцию executeCreateCrmDeal
     const body = {
-      key: process.env.CRM_API_KEY,
-      username: process.env.CRM_API_USERNAME,
-      password: process.env.CRM_API_PASSWORD,
+      key: process.env.ERP_API_KEY,
+      username: process.env.ERP_API_USERNAME,
+      password: process.env.ERP_API_PASSWORD,
       action: "insert",
       entity_id: testPayload.entityId,
       items: {
@@ -56,11 +56,11 @@ async function testExecuteCreateCrmDeal() {
       },
     };
 
-    console.log("🔄 Отправляем запрос к CRM API...");
-    console.log("📡 URL:", process.env.CRM_API_URL);
+    console.log("🔄 Отправляем запрос к ERP API...");
+    console.log("📡 URL:", process.env.ERP_API_URL);
     console.log("📦 Payload:", JSON.stringify(body, null, 2));
 
-    const response = await fetch(process.env.CRM_API_URL, {
+    const response = await fetch(process.env.ERP_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
