@@ -4,13 +4,39 @@
 import { serve } from "inngest/next";
 import { inngest } from "../../src/inngest/client";
 import { 
-  createCrmDeal,
-  handleAmoCrmWebhook
-} from "../../src/inngest/functions/createCrmDeal";
+  // amoCRM Pipeline Tasks
+  parseAmoCrmWebhook,
+  authenticateAmoCrm,
+  fetchAmoCrmLead,
+  
+  // ERP Tasks
+  createErpTask,
+  
+  // Pipeline Tasks
+  handleAmoCrmWebhook,
+  completeIntegrationPipeline,
+  
+  // Legacy task
+  createCrmDeal
+} from "../../src/inngest/functions";
 
 export const functions = [
-  createCrmDeal,
+  // Entry point
   handleAmoCrmWebhook,
+  
+  // amoCRM Pipeline
+  parseAmoCrmWebhook,
+  authenticateAmoCrm,
+  fetchAmoCrmLead,
+  
+  // ERP Integration
+  createErpTask,
+  
+  // Pipeline Completion
+  completeIntegrationPipeline,
+  
+  // Legacy support
+  createCrmDeal,
 ];
 
 // Настройка Inngest сервера для Next.js

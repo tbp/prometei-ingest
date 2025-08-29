@@ -53,7 +53,16 @@ prometei-flow/
 ├── src/inngest/
 │   ├── client.ts              # Inngest клиент
 │   └── functions/
-│       └── createCrmDeal.ts   # CRM функции
+│       ├── amocrm/            # amoCRM tasks
+│       │   ├── parseWebhook.ts    # Парсинг webhook
+│       │   ├── authenticate.ts    # OAuth2 авторизация
+│       │   └── fetchLead.ts       # Получение данных сделки
+│       ├── erp/               # ERP tasks
+│       │   └── createTask.ts      # Создание задачи в ERP
+│       ├── pipeline/          # Pipeline tasks
+│       │   ├── webhook.ts         # Entry point
+│       │   └── complete.ts        # Финализация
+│       └── index.ts           # Экспорт всех functions
 ├── pages/api/
 │   └── inngest.ts            # API endpoint
 ├── scripts/
@@ -61,30 +70,54 @@ prometei-flow/
 └── package.json
 ```
 
-## 🔧 Функции
+## 🔧 Pipeline Architecture
 
-### 1. `createCrmDeal` - Создание сделки
+### 📋 **amoCRM → ERP Integration Pipeline**
+
+**Entry Point:** `handleAmoCrmWebhook` → `https://your-domain.com/api/inngest`
+
+**Pipeline Flow:**
+1. **`parseAmoCrmWebhook`** - Парсинг webhook, извлечение всех переменных
+2. **`authenticateAmoCrm`** - OAuth2 авторизация в amoCRM API
+3. **`fetchAmoCrmLead`** - Получение полных данных сделки по ID
+4. **`createErpTask`** - Создание задачи в ERP системе
+5. **`completeIntegrationPipeline`** - Финализация и логирование результатов
+
+### 🔄 **Доступные переменные из webhook:**
 
 ```typescript
+// Основные данные
+leadId: "45721053"
+accountId: "32452514" 
+subdomain: "oooprometei"
+
+// Pipeline изменения
+pipelineId: "9679730"
+statusId: "77186758"
+oldPipelineId: "9679730"
+oldStatusId: "77186754"
+
+// Флаги изменений
+pipelineChanged: boolean
+statusChanged: boolean
+
+// Метаданные
+webhookId: "01K3V7Q0QYTEM0DMCF9P1SWYTB"
+timestamp: 1756481946366
+```
+
+### 💡 **Legacy Support:**
+
+```typescript
+// Прямое создание задачи (без amoCRM)
 await inngest.send({
   name: "crm/create-deal",
   data: {
     dealName: "Новая сделка",
-    amount: 15000,
-    entityId: 70
+    amount: 15000
   }
 });
 ```
-
-### 2. `handleAmoCrmWebhook` - Обработка webhook от amoCRM
-
-**Процесс:**
-1. Получает webhook от amoCRM с ID сделки
-2. Авторизуется в amoCRM API
-3. Получает данные сделки (название, сумма)
-4. Создает задачу в ERP системе
-
-**Webhook URL:** `https://your-domain.com/api/inngest`
 
 ## 🌐 Настройка webhook в amoCRM
 
