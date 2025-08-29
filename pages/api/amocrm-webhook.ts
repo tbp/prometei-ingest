@@ -11,6 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Проверяем переменные окружения Inngest
+    if (!process.env.INNGEST_EVENT_KEY) {
+      throw new Error('Missing INNGEST_EVENT_KEY environment variable');
+    }
+
     console.log('📥 Received amoCRM webhook:', {
       headers: req.headers,
       body: req.body,
