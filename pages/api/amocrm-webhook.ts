@@ -2,7 +2,7 @@
 // Этот endpoint принимает webhook от amoCRM и отправляет событие в Inngest
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { inngest } from '../../inngest/client';
+import { Inngest } from 'inngest';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Принимаем только POST запросы
@@ -20,6 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       headers: req.headers,
       body: req.body,
       query: req.query
+    });
+
+    // Создаем Inngest клиент с правильной конфигурацией
+    const inngest = new Inngest({
+      id: "prometei-ingest",
+      eventKey: process.env.INNGEST_EVENT_KEY,
     });
 
     // Отправляем событие в Inngest для обработки
