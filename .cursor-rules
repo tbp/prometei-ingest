@@ -1,0 +1,110 @@
+# 🚀 Prometei Flow - Context7 Rules
+
+## 📋 Общие правила использования Context7
+
+### 🔍 Когда использовать Context7
+- При работе с любыми библиотеками или API добавляй фразу «use context7»
+- Для получения актуальной документации по технологиям проекта
+- При возникновении ошибок или неожиданного поведения библиотек
+- Для проверки совместимости версий зависимостей
+
+### 🛠 Технологии проекта (требуют Context7)
+
+#### **Inngest** (v3.22.12)
+- Используй Context7 для: workflow orchestration, event handling, retry policies
+- Запрос: "use context7 - Inngest v3.22.12 workflow patterns and best practices"
+- Особое внимание: типизация events, error handling, step functions
+
+#### **Next.js** (v14.0.0)  
+- Используй Context7 для: API routes, middleware, deployment
+- Запрос: "use context7 - Next.js v14 API routes and serverless functions"
+- Особое внимание: App Router, API endpoints, Vercel deployment
+
+#### **TypeScript** (v5.0.0)
+- Используй Context7 для: типизация, конфигурация, best practices
+- Запрос: "use context7 - TypeScript v5 strict typing and configuration"
+- Особое внимание: strict mode, type inference, module resolution
+
+#### **React** (v18.0.0)
+- Используй Context7 для: hooks, components, performance
+- Запрос: "use context7 - React v18 hooks and concurrent features"
+
+### 🔌 API интеграции (требуют Context7)
+
+#### **amoCRM API**
+- Используй Context7 для: OAuth2, webhooks, API endpoints
+- Запрос: "use context7 - amoCRM API v4 OAuth2 authentication and webhooks"
+- Особое внимание: refresh tokens, webhook validation, rate limits
+
+#### **ERP системы**
+- Используй Context7 для: интеграционные паттерны, error handling
+- Запрос: "use context7 - ERP system integration patterns and best practices"
+
+### 📦 Управление зависимостями
+
+#### **Обновление пакетов**
+- Всегда используй Context7 перед обновлением зависимостей
+- Запрос: "use context7 - check compatibility for [package-name] version [version]"
+- Проверяй breaking changes и migration guides
+
+#### **Новые зависимости**
+- Используй Context7 для выбора подходящих библиотек
+- Запрос: "use context7 - recommend libraries for [specific-task] in Node.js/TypeScript"
+
+### 🐛 Отладка и решение проблем
+
+#### **Ошибки компиляции**
+- При TypeScript ошибках: "use context7 - TypeScript error [error-code] solution"
+- При Next.js ошибках: "use context7 - Next.js build error troubleshooting"
+
+#### **Runtime ошибки**
+- При Inngest ошибках: "use context7 - Inngest function execution errors"
+- При API ошибках: "use context7 - Node.js API error handling patterns"
+
+### 🚀 Деплой и производство
+
+#### **Vercel deployment**
+- Используй Context7 для: конфигурация, environment variables, troubleshooting
+- Запрос: "use context7 - Vercel deployment configuration for Next.js with Inngest"
+
+#### **Environment configuration**
+- Запрос: "use context7 - secure environment variables management in production"
+
+### 📝 Примеры запросов Context7
+
+```
+# Общий паттерн
+"use context7 - [технология] [версия] [конкретная задача]"
+
+# Конкретные примеры для проекта:
+"use context7 - Inngest v3.22.12 webhook event handling with TypeScript"
+"use context7 - Next.js v14 API routes with Inngest integration"
+"use context7 - amoCRM API v4 OAuth2 refresh token management"
+"use context7 - TypeScript v5 strict typing for webhook payloads"
+"use context7 - Vercel deployment environment variables for Inngest"
+```
+
+### ⚡ Быстрые команды
+
+- **Новая функция**: "use context7 - implement [feature] using Inngest and TypeScript"
+- **Отладка**: "use context7 - debug [specific-error] in [technology]"
+- **Оптимизация**: "use context7 - optimize [component/function] performance"
+- **Безопасность**: "use context7 - secure [API/integration] best practices"
+
+### 🎯 Специфичные правила проекта
+
+1. **Webhook обработка**: Всегда используй Context7 для валидации webhook payload
+2. **OAuth2 токены**: Используй Context7 для безопасного управления токенами
+3. **Error handling**: Используй Context7 для паттернов обработки ошибок в Inngest
+4. **Type safety**: Используй Context7 для строгой типизации всех API интерфейсов
+5. **Performance**: Используй Context7 для оптимизации workflow и API calls
+
+### 📚 Документация и обучение
+
+- Используй Context7 для изучения новых паттернов и best practices
+- Запрашивай примеры кода через Context7 для конкретных use cases
+- Проверяй актуальность документации через Context7 перед реализацией
+
+---
+
+**Помни**: Context7 - это твой главный источник актуальной информации. Используй его активно для всех технических решений в проекте!
