@@ -1,0 +1,129 @@
+{
+  "project": {
+    "name": "Prometei Flow",
+    "description": "amoCRM to ERP Integration Pipeline with Inngest",
+    "type": "integration-pipeline",
+    "technologies": [
+      "inngest@3.22.12",
+      "next@14.0.0", 
+      "typescript@5.0.0",
+      "react@18.0.0"
+    ]
+  },
+  "context7_rules": {
+    "always_use_context7_for": [
+      "library_documentation",
+      "api_integration_patterns",
+      "error_handling_best_practices",
+      "typescript_typing_issues",
+      "deployment_configuration",
+      "security_best_practices"
+    ],
+    "required_phrase": "use context7",
+    "priority_technologies": [
+      {
+        "name": "Inngest",
+        "version": "3.22.12",
+        "focus_areas": ["workflow_orchestration", "event_handling", "retry_policies", "step_functions"],
+        "common_queries": [
+          "Inngest v3.22.12 webhook event handling with TypeScript",
+          "Inngest function error handling and retry strategies",
+          "Inngest step functions and data flow patterns"
+        ]
+      },
+      {
+        "name": "Next.js",
+        "version": "14.0.0",
+        "focus_areas": ["api_routes", "middleware", "deployment", "serverless_functions"],
+        "common_queries": [
+          "Next.js v14 API routes with Inngest integration",
+          "Next.js v14 serverless function deployment on Vercel",
+          "Next.js v14 middleware for webhook validation"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": "5.0.0", 
+        "focus_areas": ["strict_typing", "webhook_payloads", "api_interfaces", "error_types"],
+        "common_queries": [
+          "TypeScript v5 strict typing for webhook payloads",
+          "TypeScript v5 interface design for API responses",
+          "TypeScript v5 error handling type patterns"
+        ]
+      },
+      {
+        "name": "amoCRM API",
+        "version": "v4",
+        "focus_areas": ["oauth2", "webhooks", "rate_limits", "api_endpoints"],
+        "common_queries": [
+          "amoCRM API v4 OAuth2 refresh token management",
+          "amoCRM API v4 webhook payload validation",
+          "amoCRM API v4 rate limiting and error handling"
+        ]
+      }
+    ]
+  },
+  "integration_patterns": {
+    "webhook_processing": {
+      "description": "amoCRM webhook to ERP pipeline",
+      "context7_query": "use context7 - webhook processing pipeline with Inngest and TypeScript",
+      "key_components": ["webhook_validation", "oauth2_refresh", "data_transformation", "erp_integration"]
+    },
+    "error_handling": {
+      "description": "Fault-tolerant integration with retries",
+      "context7_query": "use context7 - error handling and retry patterns for API integrations",
+      "key_components": ["exponential_backoff", "dead_letter_queues", "error_logging", "alert_systems"]
+    },
+    "authentication": {
+      "description": "OAuth2 token management for amoCRM",
+      "context7_query": "use context7 - OAuth2 token refresh and secure storage patterns",
+      "key_components": ["token_refresh", "secure_storage", "token_validation", "error_recovery"]
+    }
+  },
+  "deployment": {
+    "platform": "Vercel",
+    "context7_queries": [
+      "use context7 - Vercel deployment configuration for Next.js with Inngest",
+      "use context7 - environment variables security in Vercel production",
+      "use context7 - Vercel serverless function optimization for webhooks"
+    ]
+  },
+  "debugging": {
+    "common_issues": [
+      {
+        "category": "TypeScript Errors",
+        "context7_query": "use context7 - TypeScript compilation errors troubleshooting"
+      },
+      {
+        "category": "Inngest Function Errors", 
+        "context7_query": "use context7 - Inngest function execution and debugging"
+      },
+      {
+        "category": "API Integration Errors",
+        "context7_query": "use context7 - API integration error handling and debugging"
+      },
+      {
+        "category": "Webhook Processing Errors",
+        "context7_query": "use context7 - webhook payload validation and processing errors"
+      }
+    ]
+  },
+  "performance": {
+    "optimization_areas": [
+      "inngest_function_performance",
+      "api_call_optimization", 
+      "webhook_processing_speed",
+      "memory_usage_optimization"
+    ],
+    "context7_query": "use context7 - performance optimization for serverless webhook processing"
+  },
+  "security": {
+    "focus_areas": [
+      "webhook_signature_validation",
+      "oauth2_token_security",
+      "environment_variables_protection",
+      "api_rate_limiting"
+    ],
+    "context7_query": "use context7 - security best practices for webhook and API integrations"
+  }
+}
