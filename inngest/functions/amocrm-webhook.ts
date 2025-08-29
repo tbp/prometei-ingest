@@ -1,19 +1,39 @@
 import { inngest } from "../client";
 
 type AmoCrmWebhookPayload = {
-  data: {
-    "account[id]": string[];
-    "account[subdomain]": string[];
-    "leads[status][0][id]": string[];
-    "leads[status][0][old_pipeline_id]": string[];
-    "leads[status][0][old_status_id]": string[];
-    "leads[status][0][pipeline_id]": string[];
-    "leads[status][0][status_id]": string[];
+  originalData: any;
+  entity: string;
+  action: string;
+  leadData: {
+    id: number;
+    name: string;
+    price: number;
+    account_id: number;
+    pipeline_id: number;
+    status_id: number;
+    old_pipeline_id?: number;
+    old_status_id?: number;
+    responsible_user_id: number;
+    created_at: number;
+    updated_at: number;
   };
-  id: string;
-  name: string;
-  ts: number;
-  v: null;
+  parsedData: {
+    subdomain: string;
+    leadId: number;
+    accountId: number;
+    leadName: string;
+    leadPrice: number;
+    pipelineId: number;
+    statusId: number;
+    oldPipelineId?: number;
+    oldStatusId?: number;
+    responsibleUserId: number;
+    createdAt: number;
+    updatedAt: number;
+  };
+  receivedAt: string;
+  userAgent?: string;
+  ip?: string;
 };
 
 /**
@@ -28,24 +48,36 @@ export const handleAmoCrmWebhook = inngest.createFunction(
     
     // Step 1: Parse webhook data
     const parsed = await step.run("parse-webhook", async () => {
-      const leadId = webhookData.data["leads[status][0][id]"]?.[0];
-      const accountId = webhookData.data["account[id]"]?.[0];
-      const subdomain = webhookData.data["account[subdomain]"]?.[0];
+      // Используем уже обработанные данные из webhook endpoint
+      const parsedData = webhookData.parsedData;
+      const leadData = webhookData.leadData;
       
-      if (!leadId) {
+      if (!parsedData?.leadId) {
         throw new Error("Lead ID not found in webhook data");
       }
 
+      console.log("📋 Processing webhook data:", {
+        entity: webhookData.entity,
+        action: webhookData.action,
+        leadId: parsedData.leadId,
+        leadName: parsedData.leadName
+      });
+
       return {
-        leadId,
-        accountId,
-        subdomain,
-        pipelineId: webhookData.data["leads[status][0][pipeline_id]"]?.[0],
-        statusId: webhookData.data["leads[status][0][status_id]"]?.[0],
-        oldPipelineId: webhookData.data["leads[status][0][old_pipeline_id]"]?.[0],
-        oldStatusId: webhookData.data["leads[status][0][old_status_id]"]?.[0],
-        webhookId: webhookData.id,
-        timestamp: webhookData.ts,
+        leadId: parsedData.leadId,
+        accountId: parsedData.accountId,
+        subdomain: parsedData.subdomain,
+        leadName: parsedData.leadName,
+        leadPrice: parsedData.leadPrice,
+        pipelineId: parsedData.pipelineId,
+        statusId: parsedData.statusId,
+        oldPipelineId: parsedData.oldPipelineId,
+        oldStatusId: parsedData.oldStatusId,
+        responsibleUserId: parsedData.responsibleUserId,
+        entity: webhookData.entity,
+        action: webhookData.action,
+        webhookId: `webhook-${Date.now()}`,
+        timestamp: Date.now(),
       };
     });
 
