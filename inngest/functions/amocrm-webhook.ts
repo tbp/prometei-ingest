@@ -4,36 +4,66 @@ type AmoCrmWebhookPayload = {
   originalData: any;
   entity: string;
   action: string;
-  leadData: {
-    id: number;
-    name: string;
-    price: number;
-    account_id: number;
-    pipeline_id: number;
-    status_id: number;
-    old_pipeline_id?: number;
-    old_status_id?: number;
-    responsible_user_id: number;
-    created_at: number;
-    updated_at: number;
-  };
   parsedData: {
-    subdomain: string;
     leadId: number;
-    accountId: number;
-    leadName: string;
-    leadPrice: number;
-    pipelineId: number;
     statusId: number;
-    oldPipelineId?: number;
+    pipelineId: number;
     oldStatusId?: number;
-    responsibleUserId: number;
-    createdAt: number;
-    updatedAt: number;
+    oldPipelineId?: number;
+    accountId: number;
+    subdomain: string;
+    statusChanged: boolean;
+    pipelineChanged: boolean;
+  };
+  changes: {
+    statusChanged: boolean;
+    pipelineChanged: boolean;
   };
   receivedAt: string;
   userAgent?: string;
   ip?: string;
+};
+
+type AmoCrmLeadResponse = {
+  id: number;
+  name: string;
+  price: number;
+  responsible_user_id: number;
+  group_id: number;
+  status_id: number;
+  pipeline_id: number;
+  loss_reason_id?: number;
+  source_id?: number;
+  created_by: number;
+  updated_by: number;
+  closed_at?: number;
+  created_at: number;
+  updated_at: number;
+  closest_task_at?: number;
+  is_deleted: boolean;
+  custom_fields_values?: any;
+  score?: number;
+  account_id: number;
+  labor_cost?: number;
+  is_price_modified_by_robot?: boolean;
+  _embedded?: {
+    tags?: Array<{
+      id: number;
+      name: string;
+      color?: string;
+    }>;
+    contacts?: Array<{
+      id: number;
+      is_main: boolean;
+    }>;
+    companies?: Array<{
+      id: number;
+    }>;
+    source?: {
+      id: number;
+      name: string;
+    };
+  };
 };
 
 /**
@@ -50,7 +80,6 @@ export const handleAmoCrmWebhook = inngest.createFunction(
     const parsed = await step.run("parse-webhook", async () => {
       // Используем уже обработанные данные из webhook endpoint
       const parsedData = webhookData.parsedData;
-      const leadData = webhookData.leadData;
       
       if (!parsedData?.leadId) {
         throw new Error("Lead ID not found in webhook data");
@@ -60,20 +89,20 @@ export const handleAmoCrmWebhook = inngest.createFunction(
         entity: webhookData.entity,
         action: webhookData.action,
         leadId: parsedData.leadId,
-        leadName: parsedData.leadName
+        statusChanged: parsedData.statusChanged,
+        pipelineChanged: parsedData.pipelineChanged
       });
 
       return {
         leadId: parsedData.leadId,
         accountId: parsedData.accountId,
         subdomain: parsedData.subdomain,
-        leadName: parsedData.leadName,
-        leadPrice: parsedData.leadPrice,
         pipelineId: parsedData.pipelineId,
         statusId: parsedData.statusId,
         oldPipelineId: parsedData.oldPipelineId,
         oldStatusId: parsedData.oldStatusId,
-        responsibleUserId: parsedData.responsibleUserId,
+        statusChanged: parsedData.statusChanged,
+        pipelineChanged: parsedData.pipelineChanged,
         entity: webhookData.entity,
         action: webhookData.action,
         webhookId: `webhook-${Date.now()}`,
@@ -94,14 +123,9 @@ export const handleAmoCrmWebhook = inngest.createFunction(
       return AMOCRM_ACCESS_TOKEN;
     });
 
-    // Step 3: Fetch lead data from amoCRM
+    // Step 3: Fetch lead data from amoCRM API
     const leadData = await step.run("fetch-lead-data", async () => {
-      // Используем поддомен из webhook данных
-      const subdomain = webhookData.parsedData?.subdomain || parsed.subdomain;
-
-      if (!subdomain) {
-        throw new Error("Missing subdomain in webhook data");
-      }
+      const subdomain = parsed.subdomain;
 
       console.log(`📥 Fetching lead data for ID: ${parsed.leadId} from ${subdomain}`);
 
@@ -117,7 +141,7 @@ export const handleAmoCrmWebhook = inngest.createFunction(
         throw new Error(`amoCRM API error ${response.status}: ${error}`);
       }
 
-      const data = await response.json();
+      const data: AmoCrmLeadResponse = await response.json();
       console.log(`📋 Lead fetched: ${data.name}, price: ${data.price}`);
       return data;
     });
@@ -130,6 +154,8 @@ export const handleAmoCrmWebhook = inngest.createFunction(
         throw new Error("Missing ERP environment variables");
       }
 
+      console.log(`🏢 Creating ERP task for lead: ${leadData.name} (ID: ${leadData.id}), price: ${leadData.price}`);
+
       const response = await fetch(ERP_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -140,8 +166,8 @@ export const handleAmoCrmWebhook = inngest.createFunction(
           action: "insert",
           entity_id: 70,
           items: {
-            field_1039: leadData.name,
-            ...(leadData.price && { field_1040: leadData.price }),
+            field_1039: leadData.name, // Название сделки из amoCRM
+            ...(leadData.price && { field_1040: leadData.price }), // Сумма сделки
           },
         }),
       });
@@ -151,21 +177,30 @@ export const handleAmoCrmWebhook = inngest.createFunction(
         throw new Error(`ERP API error ${response.status}: ${error}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      console.log(`✅ ERP task created successfully:`, result);
+      return result;
     });
 
     return {
       success: true,
       pipeline: "amoCRM → ERP Integration",
-      input: {
-        webhookId: parsed.webhookId,
+      webhook: {
         leadId: parsed.leadId,
-        leadName: leadData.name,
-        leadPrice: leadData.price,
+        statusChanged: parsed.statusChanged,
+        pipelineChanged: parsed.pipelineChanged,
       },
-      output: {
-        erpTaskId: erpResult.data?.id,
-        erpResult,
+      amoCrmData: {
+        id: leadData.id,
+        name: leadData.name,
+        price: leadData.price,
+        status_id: leadData.status_id,
+        pipeline_id: leadData.pipeline_id,
+        responsible_user_id: leadData.responsible_user_id,
+      },
+      erpResult: {
+        taskId: erpResult.data?.id,
+        response: erpResult,
       },
       completedAt: new Date().toISOString(),
     };

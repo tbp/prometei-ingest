@@ -5,7 +5,7 @@ Event-driven интеграция amoCRM с ERP системой через Inng
 ## 📋 Возможности
 
 - ✅ **Webhook от amoCRM** - автоматическая обработка входящих webhooks
-- ✅ **Создание сделок в CRM** - простая интеграция с CRM API
+- ✅ **Создание задач в ERP** - автоматическая интеграция с ERP системой
 - ✅ **Fault tolerance** - автоматические retry при ошибках
 - ✅ **TypeScript** - полная типизация
 
@@ -83,13 +83,13 @@ prometei-ingest/
 
 ### 📋 **amoCRM → ERP Integration (Single Function with Steps)**
 
-**Entry Point:** `handleAmoCrmWebhook` → `https://prometei-ingest.iq-project.ru/api/inngest`
+**Entry Point:** `handleAmoCrmWebhook` → `https://prometei-ingest.iq-project.ru/api/amocrm-webhook`
 
 **Function Steps (согласно Inngest best practices):**
-1. **`parse-webhook`** - Парсинг webhook, извлечение всех переменных
-2. **`authenticate-amocrm`** - OAuth2 авторизация в amoCRM API
-3. **`fetch-lead-data`** - Получение полных данных сделки по ID
-4. **`create-erp-task`** - Создание задачи в ERP системе
+1. **`parse-webhook`** - Парсинг URL-encoded данных от amoCRM
+2. **`get-amocrm-token`** - Использование JWT токена для amoCRM API
+3. **`fetch-lead-data`** - Получение полных данных сделки по ID из amoCRM
+4. **`create-erp-task`** - Создание задачи в ERP системе с названием сделки
 
 **Преимущества step-based подхода:**
 - ✅ Автоматические retry для каждого step
@@ -123,11 +123,11 @@ timestamp: 1756481946366
 ### 💡 **Legacy Support:**
 
 ```typescript
-// Прямое создание задачи (без amoCRM)
+// Прямое создание ERP задачи (без amoCRM)
 await inngest.send({
-  name: "crm/create-deal",
+  name: "erp/task.create",
   data: {
-    dealName: "Новая сделка",
+    dealName: "Новая ERP задача",
     amount: 15000
   }
 });
@@ -136,7 +136,7 @@ await inngest.send({
 ## 🌐 Настройка webhook в amoCRM
 
 1. Войдите в настройки amoCRM
-2. Добавьте webhook: `https://your-domain.com/api/inngest`
+2. Добавьте webhook: `https://prometei-ingest.iq-project.ru/api/amocrm-webhook`
 
 
 

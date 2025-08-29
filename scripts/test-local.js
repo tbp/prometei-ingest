@@ -12,10 +12,10 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 /**
- * Тестирование executeCreateCrmDeal функции напрямую
+ * Тестирование createErpTask функции напрямую
  */
-async function testExecuteCreateCrmDeal() {
-  console.log("🚀 Тестирование executeCreateCrmDeal функции...");
+async function testCreateErpTask() {
+  console.log("🚀 Тестирование createErpTask функции...");
   
   // Проверяем переменные окружения
   const requiredEnvs = ['ERP_API_URL', 'ERP_API_KEY', 'ERP_API_USERNAME', 'ERP_API_PASSWORD'];
@@ -43,7 +43,7 @@ async function testExecuteCreateCrmDeal() {
   console.log("📤 Тестовые данные:", JSON.stringify(testPayload, null, 2));
 
   try {
-    // Имитируем функцию executeCreateCrmDeal
+    // Имитируем функцию createErpTask
     const body = {
       key: process.env.ERP_API_KEY,
       username: process.env.ERP_API_USERNAME,
@@ -76,20 +76,20 @@ async function testExecuteCreateCrmDeal() {
       json = text;
     }
 
-    console.log("📊 Ответ CRM API:");
+    console.log("📊 Ответ ERP API:");
     console.log("   Status:", response.status);
     console.log("   Response:", json);
 
     if (response.ok) {
-      console.log("✅ CRM API тест успешен!");
+      console.log("✅ ERP API тест успешен!");
       return true;
     } else {
-      console.log("❌ CRM API вернул ошибку:", response.status);
+      console.log("❌ ERP API вернул ошибку:", response.status);
       return false;
     }
 
   } catch (error) {
-    console.error("❌ Ошибка при тестировании CRM API:", error.message);
+    console.error("❌ Ошибка при тестировании ERP API:", error.message);
     return false;
   }
 }
@@ -121,9 +121,11 @@ function testProjectStructure() {
   console.log("📁 Проверка структуры проекта...");
   
   const requiredFiles = [
-    'src/inngest/client.ts',
-    'src/inngest/functions/createCrmDeal.ts',
+    'inngest/client.ts',
+    'inngest/functions/create-erp-task.ts',
+    'inngest/functions/amocrm-webhook.ts',
     'pages/api/inngest.ts',
+    'pages/api/amocrm-webhook.ts',
     'package.json',
     'tsconfig.json'
   ];
@@ -149,7 +151,7 @@ async function runAllTests() {
   const tests = [
     { name: "Структура проекта", fn: testProjectStructure },
     { name: "TypeScript компиляция", fn: testTypeScriptCompilation },
-    { name: "CRM API функция", fn: testExecuteCreateCrmDeal }
+    { name: "ERP API функция", fn: testCreateErpTask }
   ];
 
   let allPassed = true;
@@ -194,8 +196,8 @@ async function main() {
 
   try {
     switch (command) {
-      case "crm":
-        await testExecuteCreateCrmDeal();
+      case "erp":
+        await testCreateErpTask();
         break;
       case "compile":
         await testTypeScriptCompilation();
@@ -205,7 +207,7 @@ async function main() {
         break;
       default:
         console.log("📋 Доступные команды:");
-        console.log("node scripts/test-local.js crm       - тест CRM API");
+        console.log("node scripts/test-local.js erp       - тест ERP API");
         console.log("node scripts/test-local.js compile   - тест компиляции");
         console.log("node scripts/test-local.js structure - тест структуры");
         console.log("node scripts/test-local.js           - все тесты");
@@ -227,7 +229,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  testExecuteCreateCrmDeal,
+  testCreateErpTask,
   testTypeScriptCompilation,
   testProjectStructure,
   runAllTests

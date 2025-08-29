@@ -84,23 +84,23 @@ async function testInngestSync() {
 }
 
 /**
- * Тестирование прямого создания задачи
+ * Тестирование прямого создания ERP задачи
  */
-async function testDirectDealCreation() {
-  console.log("\n🧪 Тестирование прямого создания задачи...");
+async function testDirectErpTaskCreation() {
+  console.log("\n🧪 Тестирование прямого создания ERP задачи...");
   
   const endpoint = "https://prometei-ingest.iq-project.ru/api/inngest";
   
   const testEvent = {
-    name: "crm/create-deal",
+    name: "erp/task.create",
     data: {
-      dealName: "Тестовая сделка из Inngest",
+      dealName: "Тестовая ERP задача из Inngest",
       amount: 12500,
       entityId: 70
     }
   };
 
-  console.log("📤 Отправляем событие создания задачи:");
+  console.log("📤 Отправляем событие создания ERP задачи:");
   console.log(JSON.stringify(testEvent, null, 2));
 
   try {
@@ -120,9 +120,9 @@ async function testDirectDealCreation() {
     console.log("Response:", responseData);
 
     if (response.ok) {
-      console.log("✅ Прямое создание задачи работает!");
+      console.log("✅ Прямое создание ERP задачи работает!");
     } else {
-      console.log("❌ Ошибка при создании задачи");
+      console.log("❌ Ошибка при создании ERP задачи");
     }
 
     return response.ok;
@@ -141,16 +141,16 @@ async function main() {
   console.log("=" .repeat(50));
   
   const test1 = await testInngestSync();
-  const test2 = await testDirectDealCreation();
+  const test2 = await testDirectErpTaskCreation();
   
   console.log("\n🎉 Результаты тестирования:");
   console.log("amoCRM Webhook:", test1 ? "✅ PASSED" : "❌ FAILED");
-  console.log("Direct Deal Creation:", test2 ? "✅ PASSED" : "❌ FAILED");
+  console.log("Direct ERP Task Creation:", test2 ? "✅ PASSED" : "❌ FAILED");
   
   if (test1 && test2) {
     console.log("\n🚀 Все тесты прошли! Inngest готов к работе.");
     console.log("📋 Настройте webhook в amoCRM на:");
-    console.log("   https://prometei-ingest.iq-project.ru/api/inngest");
+    console.log("   https://prometei-ingest.iq-project.ru/api/amocrm-webhook");
   } else {
     console.log("\n🔧 Некоторые тесты не прошли. Проверьте настройки.");
   }
@@ -163,5 +163,5 @@ if (require.main === module) {
 
 module.exports = {
   testInngestSync,
-  testDirectDealCreation
+  testDirectErpTaskCreation
 };

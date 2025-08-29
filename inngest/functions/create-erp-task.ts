@@ -1,20 +1,20 @@
 import { inngest } from "../client";
 
-type CreateCrmDealPayload = {
+type CreateErpTaskPayload = {
   dealName: string;
   entityId?: number;
   amount?: number;
 };
 
 /**
- * Direct CRM Deal Creation Function
- * For manual or API-triggered deal creation
+ * Direct ERP Task Creation Function
+ * For manual or API-triggered ERP task creation
  */
-export const createCrmDeal = inngest.createFunction(
-  { id: "create-crm-deal", retries: 3 },
-  { event: "crm/create-deal" },
+export const createErpTask = inngest.createFunction(
+  { id: "create-erp-task", retries: 3 },
+  { event: "erp/task.create" },
   async ({ event, step }) => {
-    const payload = event.data as CreateCrmDealPayload;
+    const payload = event.data as CreateErpTaskPayload;
 
     // Validate input
     await step.run("validate-input", async () => {
