@@ -15,41 +15,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     console.log('📋 Webhook data received:', {
       headers: req.headers,
+      contentType: req.headers['content-type'],
       body: req.body,
       query: req.query
     });
 
-    // Парсим данные в формате amoCRM
-    let parsedData = null;
-    let entity = null;
-    let action = null;
-    
-    if (typeof req.body === 'object' && req.body !== null) {
-      for (const [entityName, entityData] of Object.entries(req.body)) {
-        if (typeof entityData === 'object' && entityData !== null) {
-          for (const [actionName, actionData] of Object.entries(entityData as Record<string, any>)) {
-            if (Array.isArray(actionData) && actionData.length > 0) {
-              entity = entityName;
-              action = actionName;
-              parsedData = actionData[0];
-              break;
-            }
-          }
-        }
-        if (parsedData) break;
-      }
-    }
+    // Парсим URL-encoded данные от amoCRM
+    const leadId = req.body['leads[status][0][id]'];
+    const statusId = req.body['leads[status][0][status_id]'];
+    const pipelineId = req.body['leads[status][0][pipeline_id]'];
+    const oldStatusId = req.body['leads[status][0][old_status_id]'];
+    const oldPipelineId = req.body['leads[status][0][old_pipeline_id]'];
+    const accountId = req.body['account[id]'];
+    const subdomain = req.body['account[subdomain]'];
 
     return res.status(200).json({
       success: true,
-      message: 'Webhook data received and parsed',
+      message: 'amoCRM webhook data received and parsed',
       parsed: {
-        entity,
-        action,
-        leadId: parsedData?.id,
-        leadName: parsedData?.name,
-        leadPrice: parsedData?.price,
-        data: parsedData
+        leadId,
+        statusId,
+        pipelineId,
+        oldStatusId,
+        oldPipelineId,
+        accountId,
+        subdomain,
+        statusChanged: statusId !== oldStatusId,
+        pipelineChanged: pipelineId !== oldPipelineId
       },
       raw: req.body,
       timestamp: new Date().toISOString()
