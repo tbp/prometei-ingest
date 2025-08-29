@@ -1,6 +1,6 @@
-# 🚀 Prometei Flow - CRM Integration
+# 🚀 Prometei Ingest - amoCRM to ERP Pipeline
 
-Минималистичная система интеграции с CRM на базе Inngest.
+Event-driven интеграция amoCRM с ERP системой через Inngest для автоматизации бизнес-процессов.
 
 ## 📋 Возможности
 
@@ -49,7 +49,7 @@ npm test
 ## 📁 Структура проекта
 
 ```
-prometei-flow/
+prometei-ingest/
 ├── src/inngest/
 │   ├── client.ts              # Inngest клиент
 │   └── functions/

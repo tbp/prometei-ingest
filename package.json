@@ -1,7 +1,7 @@
 {
-  "name": "prometei-flow",
+  "name": "prometei-ingest",
   "version": "1.0.0",
-  "description": "CRM Integration with Inngest",
+  "description": "amoCRM to ERP Integration Pipeline with Inngest",
   "scripts": {
     "dev": "next dev",
     "inngest": "npx inngest-cli dev",
