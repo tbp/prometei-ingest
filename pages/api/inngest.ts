@@ -5,15 +5,12 @@ import { serve } from "inngest/next";
 import { inngest } from "../../src/inngest/client";
 import { 
   createCrmDeal,
-  handleAmoCrmWebhook,
-  batchCreateCrmDeals
+  handleAmoCrmWebhook
 } from "../../src/inngest/functions/createCrmDeal";
 
-// Экспортируем все функции Inngest
 export const functions = [
   createCrmDeal,
   handleAmoCrmWebhook,
-  batchCreateCrmDeals,
 ];
 
 // Настройка Inngest сервера для Next.js
