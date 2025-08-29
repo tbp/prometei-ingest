@@ -78,6 +78,12 @@ await inngest.send({
 
 ### 2. `handleAmoCrmWebhook` - Обработка webhook от amoCRM
 
+**Процесс:**
+1. Получает webhook от amoCRM с ID сделки
+2. Авторизуется в amoCRM API
+3. Получает данные сделки (название, сумма)
+4. Создает задачу в ERP системе
+
 **Webhook URL:** `https://your-domain.com/api/inngest`
 
 ## 🌐 Настройка webhook в amoCRM
@@ -88,8 +94,16 @@ await inngest.send({
 ## 🔐 Переменные окружения
 
 ```bash
-CRM_API_URL=https://your-crm-api.com/endpoint
-CRM_API_KEY=your_api_key
-CRM_API_USERNAME=your_username
-CRM_API_PASSWORD=your_password
+# amoCRM API
+AMOCRM_CLIENT_ID=your_amocrm_client_id
+AMOCRM_CLIENT_SECRET=your_amocrm_client_secret
+AMOCRM_REDIRECT_URI=https://your-domain.com/oauth/callback
+AMOCRM_REFRESH_TOKEN=your_refresh_token
+AMOCRM_SUBDOMAIN=oooprometei
+
+# ERP System API
+CRM_API_URL=https://your-erp-api.com/endpoint
+CRM_API_KEY=your_erp_api_key
+CRM_API_USERNAME=your_erp_username
+CRM_API_PASSWORD=your_erp_password
 ```
